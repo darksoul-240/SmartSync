@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const toastContainer = document.getElementById('toast-container');
 
-    // --- Toast Notification ---
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
@@ -16,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // --- Logging ---
     function addLogEntry(event, device) {
         const logs = JSON.parse(localStorage.getItem('smartSyncLogs')) || [];
         const newLog = {
@@ -24,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
             event: event,
             device: device
         };
-        logs.unshift(newLog); // Add to the beginning of the array
-        localStorage.setItem('smartSyncLogs', JSON.stringify(logs.slice(0, 20))); // Keep last 20 logs
+        logs.unshift(newLog);
+        localStorage.setItem('smartSyncLogs', JSON.stringify(logs.slice(0, 20)));
     }
 
     function renderLogs() {
@@ -34,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const logBody = logTable.querySelector('tbody');
         const logs = JSON.parse(localStorage.getItem('smartSyncLogs')) || [];
-        logBody.innerHTML = ''; // Clear existing logs
+        logBody.innerHTML = '';
 
         if (logs.length === 0) {
             logBody.innerHTML = '<tr><td colspan="3">No log entries found.</td></tr>';
@@ -53,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Device Status ---
     function updateDeviceStatus(deviceElement, newStatus, isActive) {
         const statusElement = deviceElement.querySelector('[data-status]');
         if (statusElement) {
@@ -63,46 +60,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Event Handling ---
     document.body.addEventListener('click', (e) => {
         const button = e.target;
         const deviceElement = button.closest('[data-device]');
         if (!deviceElement) return;
 
-        const deviceType = deviceElement.dataset.device;
-        let event, deviceName;
+        let event, deviceName, toastType = 'success';
 
-        if (button.classList.contains('btn-on')) {
-            updateDeviceStatus(deviceElement, 'Active', true);
-            [eventName, deviceName] = ['Turned On', 'Security Camera'];
-        } else if (button.classList.contains('btn-off')) {
-            updateDeviceStatus(deviceElement, 'Inactive', false);
-            [eventName, deviceName] = ['Turned Off', 'Security Camera'];
+        if (button.classList.contains('btn-on') || button.classList.contains('btn-light-on')) {
+            const isActive = true;
+            const status = button.classList.contains('btn-on') ? 'Active' : 'On';
+            deviceName = button.classList.contains('btn-on') ? 'Security Camera' : 'Smart Light';
+            updateDeviceStatus(deviceElement, status, isActive);
+            event = 'Turned On';
+            toastType = 'success';
+        } else if (button.classList.contains('btn-off') || button.classList.contains('btn-light-off')) {
+            const isActive = false;
+            const status = button.classList.contains('btn-off') ? 'Inactive' : 'Off';
+            deviceName = button.classList.contains('btn-off') ? 'Security Camera' : 'Smart Light';
+            updateDeviceStatus(deviceElement, status, isActive);
+            event = 'Turned Off';
+            toastType = 'error';
         } else if (button.classList.contains('btn-lock')) {
             updateDeviceStatus(deviceElement, 'Locked', true);
-            [eventName, deviceName] = ['Locked', 'Smart Lock'];
+            [eventName, deviceName, toastType] = ['Locked', 'Smart Lock', 'success'];
         } else if (button.classList.contains('btn-unlock')) {
             updateDeviceStatus(deviceElement, 'Unlocked', false);
-            [eventName, deviceName] = ['Unlocked', 'Smart Lock'];
+            [eventName, deviceName, toastType] = ['Unlocked', 'Smart Lock', 'error'];
         } else if (button.classList.contains('btn-set-temp')) {
-            const temp = deviceElement.querySelector('.temp-input').value;
-            updateDeviceStatus(deviceElement, `${temp}°C`, true);
-            [eventName, deviceName] = [`Set to ${temp}°C`, 'Thermostat'];
-        } else if (button.classList.contains('btn-light-on')) {
-            updateDeviceStatus(deviceElement, 'On', true);
-            [eventName, deviceName] = ['Turned On', 'Smart Light'];
-        } else if (button.classList.contains('btn-light-off')) {
-            updateDeviceStatus(deviceElement, 'Off', false);
-            [eventName, deviceName] = ['Turned Off', 'Smart Light'];
+            const tempInput = deviceElement.querySelector('.temp-input');
+            const statusElement = deviceElement.querySelector('[data-status]');
+            if (tempInput && statusElement) {
+                const newTemp = parseFloat(tempInput.value);
+                const currentTemp = parseFloat(statusElement.textContent);
+                
+                if (newTemp > currentTemp) {
+                    toastType = 'error'; // Red for increase
+                } else if (newTemp < currentTemp) {
+                    toastType = 'info'; // Blue for decrease
+                }
+                
+                updateDeviceStatus(deviceElement, `${newTemp}°C`, true);
+                [eventName, deviceName] = [`Set to ${newTemp}°C`, 'Thermostat'];
+            }
         }
 
         if (eventName) {
-            showToast(`${deviceName} ${eventName}.`);
+            showToast(`${deviceName} ${eventName}.`, toastType);
             addLogEntry(eventName, deviceName);
         }
     });
 
-    // --- Form Validation ---
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
@@ -125,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Page-specific initializations ---
     if (document.getElementById('log-table')) {
         renderLogs();
     }

@@ -37,6 +37,10 @@ body {
     background-color: #dc3545;
 }
 
+.toast.info {
+    background-color: #007bff;
+}
+
 header {
     background-color: #ffffff;
     padding: 1rem;

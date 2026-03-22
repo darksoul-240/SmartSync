@@ -22,13 +22,50 @@
     </header>
 
     <main>
+        <section class="widget full-width">
+            <h2>Live Controls</h2>
+            <div class="device-list">
+                <div class="device" data-device="camera">
+                    <div>
+                        <span>Security Camera</span>
+                        <span class="status active" data-status>Active</span>
+                    </div>
+                    <div class="device-controls">
+                        <button class="btn-on">Turn On</button>
+                        <button class="btn-off">Turn Off</button>
+                    </div>
+                </div>
+                <div class="device" data-device="lock">
+                    <div>
+                        <span>Smart Lock</span>
+                        <span class="status active" data-status>Locked</span>
+                    </div>
+                    <div class="device-controls">
+                        <button class="btn-lock">Lock</button>
+                        <button class="btn-unlock">Unlock</button>
+                    </div>
+                </div>
+                 <div class="device" data-device="light">
+                    <div>
+                        <span>Smart Light</span>
+                        <span class="status inactive" data-status>Off</span>
+                    </div>
+                    <div class="device-controls">
+                        <button class="btn-light-on">Turn On</button>
+                        <button class="btn-light-off">Turn Off</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <h2>Security Logs</h2>
         <table id="log-table">
             <thead>
                 <tr>
                     <th>Timestamp</th>
-                    <th>Event</th>
                     <th>Device</th>
+                    <th>Event</th>
+                    <th>Source</th>
                 </tr>
             </thead>
             <tbody>

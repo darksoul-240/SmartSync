@@ -4,6 +4,18 @@ body {
     color: #333;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex-grow: 1;
+    padding: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 #toast-container {
@@ -41,11 +53,16 @@ body {
     background-color: #007bff;
 }
 
+.toast.neutral {
+    background-color: #6c757d;
+}
+
 header {
     background-color: #ffffff;
     padding: 1rem;
     text-align: center;
     border-bottom: 1px solid #dee2e6;
+    width: 100%;
 }
 
 header h1 {
@@ -72,16 +89,6 @@ nav a {
 
 nav a.active {
     color: #007bff;
-}
-
-main {
-    padding: 2rem;
-}
-
-.home-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
 }
 
 .widget {
@@ -131,12 +138,17 @@ main {
     color: #dc3545;
 }
 
-.device-controls button, .device-controls .btn-set-temp {
+.device-controls button {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     margin-left: 0.5rem;
+    transition: filter 0.2s;
+}
+
+.device-controls button:hover {
+    filter: brightness(1.1);
 }
 
 .btn-on, .btn-lock, .btn-light-on {
@@ -165,8 +177,9 @@ footer {
     background-color: #ffffff;
     padding: 1rem;
     text-align: center;
-    margin-top: 2rem;
     border-top: 1px solid #dee2e6;
+    width: 100%;
+    margin-top: auto;
 }
 
 table {
@@ -185,11 +198,13 @@ th {
     background-color: #e9ecef;
 }
 
+tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
 form {
     display: flex;
     flex-direction: column;
-    width: 60%;
-    margin: 2rem auto;
     background: #ffffff;
     padding: 2rem;
     border-radius: 8px;
@@ -205,6 +220,10 @@ form input, form textarea {
     margin-bottom: 1rem;
     border-radius: 4px;
     border: 1px solid #ced4da;
+}
+
+form input.invalid, form textarea.invalid {
+    border-color: #dc3545;
 }
 
 form button {

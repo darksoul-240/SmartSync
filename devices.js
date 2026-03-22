@@ -1,7 +1,6 @@
 const devices = [
     {
         id: 'doorLock',
-        icon: '🔒',
         name: 'Smart Door Lock',
         description: 'Main Entrance',
         status: 'Online',
@@ -10,7 +9,6 @@ const devices = [
     },
     {
         id: 'bot',
-        icon: '🤖',
         name: 'Light Follower',
         description: 'Autonomous Mode',
         status: 'Active',
@@ -19,7 +17,6 @@ const devices = [
     },
     {
         id: 'thermostat',
-        icon: '🌡️',
         name: 'Temp/Humidity',
         description: 'Kitchen Node',
         status: 'Stable',

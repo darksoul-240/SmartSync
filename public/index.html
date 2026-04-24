@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartSync Dashboard</title>
+    
+    <!-- Bootstrap CSS (Unit IV) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* Custom tweaks so we don't need a heavy external CSS file right now */
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .device-card { transition: transform 0.2s; }
+        .device-card:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+
+    <!-- Vue App Container -->
+    <div id="app">
+        
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand" href="#">SmartSync</a>
+                <div class="navbar-nav">
+                    <a class="nav-link active" href="#">Dashboard</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">
+                <!-- Main Devices Section -->
+                <div class="col-md-8">
+                    
+                    <!-- UNIT II: HTML Form for New Device -->
+                    <div class="card mb-4 shadow-sm border-0">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">➕ Add New Device</h5>
+                        </div>
+                        <div class="card-body">
+                            <form @submit.prevent="addNewDevice">
+                                <div class="row g-2">
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" placeholder="Device Name" v-model="newDevice.name" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" v-model="newDevice.type" required>
+                                            <option value="" disabled>Select Type...</option>
+                                            <option value="light">Smart Light</option>
+                                            <option value="lock">Smart Lock</option>
+                                            <option value="camera">Camera</option>
+                                            <option value="thermostat">Thermostat</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control" placeholder="IP (e.g. 192.168.1.5)" v-model="newDevice.ipAddress" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-success w-100">Add</button>
+                                    </div>
+                                </div>
+                                <small v-if="formError" class="text-danger mt-2 d-block fw-bold">{{ formError }}</small>
+                            </form>
+                        </div>
+                    </div>
+
+                    <h2 class="mb-3">My Devices</h2>
+                    
+                    <div class="row g-3" id="device-container">
+                        <!-- Vue Directive looping through devices -->
+                        <div class="col-md-6" v-for="(device, index) in devices" :key="device._id">
+                            
+                            <div class="card shadow-sm device-card border-0">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="card-title mb-0 fw-bold">{{ device.name }}</h5>
+                                        <div>
+                                            <span class="badge me-2" :class="device.isOn ? 'bg-success' : 'bg-secondary'">
+                                                {{ device.isOn ? 'Active' : 'Offline' }}
+                                            </span>
+                                            <button class="btn btn-sm btn-outline-danger" @click="deleteDevice(device._id, index)">X</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Thermostat Input -->
+                                    <div v-if="device.type === 'thermostat'" class="input-group mb-3">
+                                        <input type="number" class="form-control" v-model="device.value">
+                                        <span class="input-group-text">°C</span>
+                                        <button class="btn btn-primary" @click="updateDevice(device)">Set</button>
+                                    </div>
+
+                                    <!-- Other Devices Toggle -->
+                                    <div v-else class="d-grid gap-2">
+                                        <button 
+                                            class="btn" 
+                                            :class="device.isOn ? 'btn-danger' : 'btn-success'"
+                                            @click="toggleDevice(index)">
+                                            {{ device.isOn ? 'Turn Off' : 'Turn On' }}
+                                        </button>
+                                    </div>
+                                    
+                                    <small class="text-muted mt-2 d-block" v-if="device.ipAddress">IP: {{ device.ipAddress }}</small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts Section -->
+                <div class="col-md-4">
+                    <h2 class="mb-3">
+                        Activity Log
+                        <button id="toggle-alerts" class="btn btn-sm btn-outline-secondary float-end mt-1">Hide</button>
+                    </h2>
+                    <ul class="list-group shadow-sm" id="alerts-box">
+                        <li class="list-group-item list-group-item-light border-0 border-bottom" v-for="alert in alerts" :key="alert._id">
+                            <strong class="text-primary">[{{ alert.time }}]</strong> <br>
+                            {{ alert.message }}
+                        </li>
+                        <li v-if="alerts.length === 0" class="list-group-item text-muted">No recent activity.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts: jQuery, Vue 3, Bootstrap JS, and Custom App Logic -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

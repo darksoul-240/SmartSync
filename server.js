@@ -3,6 +3,8 @@ const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const cors = require('cors');
 
+require('dotenv').config();
+
 const app = express();
 const PORT = 3000;
 
@@ -11,8 +13,8 @@ app.use(cors());
 app.use(express.json()); // Allows server to understand JSON data in HTTP POST requests
 app.use(express.static('public')); // Serves your index.html, app.js, and CSS from the 'public' folder
 
-// MongoDB Connection String (Replace with your own if using MongoDB Atlas)
-const mongoURI = process.env.MONGO_URI || 'mongodb+srv://ibrahim28:8309507183isa@cluster0.pu6tzs4.mongodb.net/?appName=Cluster0';
+// MongoDB Connection String
+const mongoURI = process.env.MONGO_URI;
 const dbName = 'smartsyncDB';
 let db;
 let useMemoryStore = true;
